@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Entry Form</title>
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom style for loader */
+        .loader {
+            border-top-color: #3498db;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+        <!-- Logo -->
+        <div class="flex justify-center mb-4">
+            <!-- 
+              IMPORTANT: Replace the src attribute below with the path to your logo file. 
+              For example, if your logo is named "logo.png" and is in the same folder, 
+              you would write: src="logo.png"
+            -->
+            <img src="./images/logo.png" alt="Company Logo" class="h-48">
+        </div>
+
+        <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">News Post Entry Form</h1>
+
+        <!-- Form -->
+        <form id="data-form" class="space-y-6">
+            <!-- Title -->
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input type="text" id="title" name="Title" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea id="description" name="Description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <!-- Published Date -->
+                <div>
+                    <label for="published-date" class="block text-sm font-medium text-gray-700 mb-1">Published Date</label>
+                    <input type="date" id="published-date" name="Published Date" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+
+                <!-- Published By Dropdown -->
+                <div>
+                    <label for="published-by" class="block text-sm font-medium text-gray-700 mb-1">Published By</label>
+                    <select id="published-by" name="Published By" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white" required>
+                        <option value="" disabled selected>Posted By</option>
+                        <option value="CHIEF MCCUTCHEON">CHIEF MCCUTCHEON</option>
+                        <option value="CHIEF FARQUER">CHIEF FARQUER</option>
+                        <option value="CHIEF YOUNG">CHIEF YOUNG</option>
+                        <option value="LT PAUL">LT PAUL</option>
+                        <option value="LT MILLER">LT MILLER</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Pinned Message -->
+            <div class="flex items-center">
+                <input type="checkbox" id="pinned-message" name="Pinned Message?" value="Yes" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                <label for="pinned-message" class="ml-2 block text-sm text-gray-900">Pinned Message?</label>
+            </div>
+
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" id="submit-button" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span id="button-text">POST</span>
+                    <div id="button-loader" class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-6 w-6 hidden"></div>
+                </button>
+            </div>
+        </form>
+
+        <!-- Success/Error Message Box -->
+        <div id="message-box" class="mt-6 p-4 rounded-md hidden">
+             <p id="message-text"></p>
+        </div>
+
+        <div id="responseMessage" class="text-center text-sm mt-4"></div>
+
+        <footer class="text-center pt-4 text-gray-500 text-sm border-t border-gray-200">
+            Created by TFrank615
+        </footer>
+
+
+    </div>
+
+    <script>
+        const form = document.getElementById('data-form');
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+        const buttonLoader = document.getElementById('button-loader');
+        const messageBox = document.getElementById('message-box');
+        const messageText = document.getElementById('message-text');
+
+        // IMPORTANT: Replace this with your actual Google Apps Script Web App URL
+        const googleWebAppUrl = 'https://script.google.com/macros/s/AKfycbyGeXN25Qd9EvASHmKNuoGYWadmHy8SeBMt-iSvIIAHt_NaoKln-hyo2Pj2k60KYufw/exec';
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Show loader and disable button
+            buttonText.classList.add('hidden');
+            buttonLoader.classList.remove('hidden');
+            submitButton.disabled = true;
+            
+            // Convert form data to a plain JavaScript object
+            const formData = new FormData(form);
+            const dataObject = Object.fromEntries(formData.entries());
+
+            // Reformat the date from YYYY-MM-DD to MM/DD/YYYY
+            const dateValue = dataObject['Published Date'];
+            if (dateValue) {
+                const [year, month, day] = dateValue.split('-');
+                dataObject['Published Date'] = `${month}/${day}/${year}`;
+            }
+
+            // Add an 'action' property for the script router
+            dataObject.action = 'addPost';
+
+            // Manually set checkbox value, as unchecked boxes aren't included by default
+            dataObject['Pinned Message?'] = formData.has('Pinned Message?') ? 'yes' : 'No';
+
+            // Send data as a JSON string
+            fetch(googleWebAppUrl, {
+                method: 'POST',
+                body: JSON.stringify(dataObject),
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    showMessage('Success! Your data has been submitted.', 'success');
+                    form.reset();
+                } else {
+                    throw new Error(data.message || 'An unknown error occurred.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage(`Error: ${error.message}`, 'error');
+            })
+            .finally(() => {
+                // Hide loader and re-enable button
+                buttonText.classList.remove('hidden');
+                buttonLoader.classList.add('hidden');
+                submitButton.disabled = false;
+            });
+        });
+        
+        function showMessage(message, type) {
+            messageText.textContent = message;
+            messageBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+
+            if (type === 'success') {
+                messageBox.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                 messageBox.classList.add('bg-red-100', 'text-red-800');
+            }
+
+            messageBox.classList.remove('hidden');
+
+            setTimeout(() => {
+                 messageBox.classList.add('hidden');
+            }, 5000); // Hide after 5 seconds
+        }
+    </script>
+</body>
+</html>
+

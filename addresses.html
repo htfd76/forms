@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notable Addresses</title>
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <!-- Logo -->
+        
+
+    <div class="w-full max-w-lg p-8 space-y-8 bg-white rounded-xl shadow-lg">
+        <div class="flex justify-center mb-4">
+            <!-- 
+              IMPORTANT: Replace the src attribute below with the path to your logo file. 
+              For example, if your logo is named "logo.png" and is in the same folder, 
+              you would write: src="logo.png"
+            -->
+            <img src="./images/logo.png" alt="Company Logo" class="h-48">
+        </div>
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800">Notable Address Entry</h1>
+        </div>
+
+        <!-- Form -->
+        <form id="contact-form" class="space-y-6">
+            <div>
+                <label for="Address" class="text-sm font-medium text-gray-700 block">Address</label>
+                <input type="text" id="Address" name="Address" required class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition">
+            </div>
+
+            <div>
+                <label for="Note" class="text-sm font-medium text-gray-700 block">Note</label>
+                <textarea id="Note" name="Note" rows="4" required class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
+            </div>
+            
+            <div>
+                <label for="Priority" class="text-sm font-medium text-gray-700 block">Priority</label>
+                <select id="Priority" name="Priority" required class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    <option value="Green">General</option>
+                    <option value="Yellow">Important</option>
+                    <option value="Red">Urgent</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="submit" id="submit-button" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+        <!-- Status Message Area -->
+        <div id="status-message" class="hidden text-center p-4 rounded-md"></div>
+
+        <div id="responseMessage" class="text-center text-sm mt-4"></div>
+
+        <footer class="text-center pt-4 text-gray-500 text-sm border-t border-gray-200">
+            Created by TFrank615
+        </footer>
+
+    </div>
+
+    <script>
+        // --- 1. SET YOUR WEB APP URL HERE ---
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzflDfUBo-Lep0ifEa6OJwoX1O8UfqHBA4EFNG4i6Gzule2o8aB5_9ElhzX0itCuafJ/exec'; 
+        // ------------------------------------
+
+        const form = document.getElementById('contact-form');
+        const submitButton = document.getElementById('submit-button');
+        const statusMessage = document.getElementById('status-message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            statusMessage.classList.add('hidden');
+
+            try {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                // --- 2. ADD THE ACTION IDENTIFIER ---
+                data.action = 'addAddress';
+                // ------------------------------------
+
+                // The 'Failed to fetch' error is often related to CORS (Cross-Origin Resource Sharing) policies.
+                // Sending the data as 'text/plain' helps avoid a "preflight" request that can cause issues with Google Apps Script.
+                // The Apps Script itself can still parse the JSON string from the plain text body.
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify(data),
+                });
+                
+                // Since the response from Google Apps Script after a redirect can be opaque,
+                // we'll assume success if the request doesn't throw an error.
+                // For a more robust solution, the Google Apps Script could return a JSON response directly.
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    statusMessage.textContent = 'Thank you! Your data has been submitted successfully.';
+                    statusMessage.className = 'block text-center p-4 rounded-md bg-green-100 text-green-800';
+                    form.reset();
+                } else {
+                    throw new Error(result.message || 'An unknown error occurred.');
+                }
+
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                statusMessage.textContent = `An error occurred: ${error.message}`;
+                statusMessage.className = 'block text-center p-4 rounded-md bg-red-100 text-red-800';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit';
+            }
+        });
+    </script>
+
+</body>
+</html>
+

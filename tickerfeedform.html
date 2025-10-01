@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticker Feed Form</title>
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-lg p-8 space-y-8 bg-white rounded-2xl shadow-lg">
+        <div class="flex justify-center mb-4">
+            <!-- 
+              IMPORTANT: Replace the src attribute below with the path to your logo file. 
+              For example, if your logo is named "logo.png" and is in the same folder, 
+              you would write: src="logo.png"
+            -->
+            <img src="./images/logo.png" alt="Company Logo" class="h-48">
+        </div>
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800">Ticker Feed Form</h1>
+        </div>
+
+        <!-- The form that will send data to the Google Sheet -->
+        <form id="dataForm" class="mt-8 space-y-6">
+            <div>
+                <label for="startDateTime" class="block text-sm font-medium text-gray-700">Start Date/Time</label>
+                <input type="datetime-local" id="startDateTime" name="Start Date/Time" required
+                       class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div>
+                <label for="endDateTime" class="block text-sm font-medium text-gray-700">End Date/Time</label>
+                <input type="datetime-local" id="endDateTime" name="End Date/Time" required
+                       class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div>
+                <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                <textarea id="message" name="Message" rows="4" required
+                          class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+            </div>
+
+            <div>
+                <button type="submit" id="submitButton"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+        <!-- Message area to show success or error feedback -->
+        <div id="responseMessage" class="text-center text-sm mt-4"></div>
+
+        <footer class="text-center pt-4 text-gray-500 text-sm border-t border-gray-200">
+            Created by TFrank615
+        </footer>
+    </div>
+
+    <script>
+        // --- IMPORTANT ---
+        // 1. Follow the instructions in 'instructions.md' to get your script URL.
+        // 2. Paste your Google Apps Script Web App URL below.
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxnWn0tR1ZX5QcBF-um4h2uSJXg6tr6n1EQvOgvGiMGXkmK9wkF72w8RzG4tNNmdePm/exec';
+
+        const form = document.getElementById('dataForm');
+        const submitButton = document.getElementById('submitButton');
+        const responseMessage = document.getElementById('responseMessage');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Disable button and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            responseMessage.textContent = '';
+            responseMessage.classList.remove('text-green-600', 'text-red-600');
+            
+            // Convert form data to a plain object
+            const formData = new FormData(form);
+            const dataObj = {};
+            formData.forEach((value, key) => (dataObj[key] = value));
+            
+            // Add the action for the router script
+            dataObj.action = 'addSimpleEntry';
+
+            // Send data as a JSON string
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                // Google Apps Script requires the payload as a string and doesn't handle 'application/json' well from cross-origin requests.
+                // 'text/plain' is a common workaround.
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(dataObj),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // The backend now returns 'result' for this specific action
+                if (data.result === 'success') {
+                    responseMessage.textContent = 'Success! Your data has been sent.';
+                    responseMessage.classList.add('text-green-600');
+                    form.reset(); // Clear the form
+                } else {
+                    throw new Error(data.message || 'An unknown error occurred.');
+                }
+            })
+            .catch(error => {
+                console.error('Error!', error);
+                responseMessage.textContent = `Error: ${error.message}`;
+                responseMessage.classList.add('text-red-600');
+            })
+            .finally(() => {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit to Sheet';
+            });
+        });
+    </script>
+</body>
+</html>
+
+
