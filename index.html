@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTFD Admin</title>
     <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -12,11 +13,16 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        #contentFrame {
+            width: 100%;
+            height: 90vh; /* Adjust height as needed */
+            border: none;
+        }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
 
-    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div id="main-content" class="min-h-screen flex flex-col items-center justify-center p-4">
 
         <!-- Logo -->
         <div class="flex justify-center mb-4">
@@ -37,39 +43,43 @@
         <div class="flex flex-wrap items-center justify-center gap-6 md:gap-8">
 
             <!-- Link 1: Unit Status Update -->
-            <a href="unitstatus.html" target="_blank" rel="noopener noreferrer" class="group transition-transform transform hover:-translate-y-2">
+            <a href="unitstatus.html" class="app-link group transition-transform transform hover:-translate-y-2">
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 w-32 h-32 flex items-center justify-center">
-                    <!-- Replaced Font Awesome icon with an img tag -->
                     <img src="./images/unitstatus.png" alt="Unit Status Icon" class="w-16 h-16 object-contain transition-transform group-hover:scale-110">
                 </div>
                 <p class="text-center mt-3 font-semibold text-gray-700 dark:text-gray-300">UNIT STATUS</p>
             </a>
 
             <!-- Link 2: Notable Addresses -->
-            <a href="addresses.html" target="_blank" rel="noopener noreferrer" class="group transition-transform transform hover:-translate-y-2">
+            <a href="addresses.html" class="app-link group transition-transform transform hover:-translate-y-2">
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 w-32 h-32 flex items-center justify-center">
-                    <!-- Replaced Font Awesome icon with an img tag -->
                     <img src="./images/addresses.png" alt="Address Icon" class="w-16 h-16 object-contain transition-transform group-hover:scale-110">
                 </div>
                  <p class="text-center mt-3 font-semibold text-gray-700 dark:text-gray-300">ADDRESSES</p>
             </a>
 
             <!-- Link 3: News Post -->
-            <a href="newsfeedform.html" target="_blank" rel="noopener noreferrer" class="group transition-transform transform hover:-translate-y-2">
+            <a href="newsfeedform.html" class="app-link group transition-transform transform hover:-translate-y-2">
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 w-32 h-32 flex items-center justify-center">
-                    <!-- Replaced Font Awesome icon with an img tag -->
                     <img src="./images/news.png" alt="News Icon" class="w-16 h-16 object-contain transition-transform group-hover:scale-110">
                 </div>
                 <p class="text-center mt-3 font-semibold text-gray-700 dark:text-gray-300">NEWS</p>
             </a>
 
             <!-- Link 4: Ticker Feed Form -->
-            <a href="tickerfeedform.html" target="_blank" rel="noopener noreferrer" class="group transition-transform transform hover:-translate-y-2">
+            <a href="tickerfeedform.html" class="app-link group transition-transform transform hover:-translate-y-2">
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 w-32 h-32 flex items-center justify-center">
-                    <!-- Replaced Font Awesome icon with an img tag -->
                     <img src="./images/tickerfeed.png" alt="Ticker Icon" class="w-16 h-16 object-contain transition-transform group-hover:scale-110">
                 </div>
                 <p class="text-center mt-3 font-semibold text-gray-700 dark:text-gray-300">TICKER FEED</p>
+            </a>
+
+            <!-- Link 5: Manual Alert -->
+            <a href="https://tfrank615.github.io/76db/manualalert" class="app-link group transition-transform transform hover:-translate-y-2">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 w-32 h-32 flex items-center justify-center">
+                    <img src="./images/alertS.png" alt="Alert Icon" class="w-16 h-16 object-contain transition-transform group-hover:scale-110">
+                </div>
+                <p class="text-center mt-3 font-semibold text-gray-700 dark:text-gray-300">ALERTS</p>
             </a>
 
         </div>
@@ -81,6 +91,42 @@
         </footer>
         
     </div>
+
+    <div id="iframe-container" class="hidden p-4">
+        <button id="backButton" class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">
+            &larr; Back to Admin Home
+        </button>
+        <iframe id="contentFrame"></iframe>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('main-content');
+            const iframeContainer = document.getElementById('iframe-container');
+            const contentFrame = document.getElementById('contentFrame');
+            const backButton = document.getElementById('backButton');
+            const appLinks = document.querySelectorAll('.app-link');
+
+            appLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const url = link.getAttribute('href');
+                    
+                    if (url) {
+                        contentFrame.src = url;
+                        mainContent.classList.add('hidden');
+                        iframeContainer.classList.remove('hidden');
+                    }
+                });
+            });
+
+            backButton.addEventListener('click', () => {
+                iframeContainer.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                contentFrame.src = 'about:blank'; // Clear the iframe
+            });
+        });
+    </script>
 
 </body>
 </html>
