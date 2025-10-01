@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTFD Admin - Mobile</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a202c">
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for a nice background and centered content */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+
+        <!-- Logo -->
+        <div class="flex justify-center mb-6">
+            <!-- 
+              IMPORTANT: Replace the src attribute below with the path to your logo file. 
+              For example, if your logo is named "logo.png" and is in the same folder, 
+              you would write: src="logo.png"
+            -->
+            <img src="./images/logo.png" alt="Company Logo" class="h-24">
+        </div>
+        
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold">Admin Links & Forms</h1>
+        </div>
+
+        <!-- Links Container -->
+        <div class="flex flex-col items-center justify-center gap-4 w-full max-w-sm">
+
+            <!-- Link 1: Unit Status Update -->
+            <a href="unitstatus.html" target="_blank" rel="noopener noreferrer" class="w-full transition-transform transform hover:scale-105">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 w-full flex items-center">
+                    <img src="./images/unitstatus.png" alt="Unit Status Icon" class="w-12 h-12 object-contain">
+                    <p class="ml-4 text-lg font-semibold text-gray-700 dark:text-gray-300">UNIT STATUS</p>
+                </div>
+            </a>
+
+            <!-- Link 2: Notable Addresses -->
+            <a href="addresses.html" target="_blank" rel="noopener noreferrer" class="w-full transition-transform transform hover:scale-105">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 w-full flex items-center">
+                    <img src="./images/addresses.png" alt="Address Icon" class="w-12 h-12 object-contain">
+                     <p class="ml-4 text-lg font-semibold text-gray-700 dark:text-gray-300">ADDRESSES</p>
+                </div>
+            </a>
+
+            <!-- Link 3: News Post -->
+            <a href="newsfeedform.html" target="_blank" rel="noopener noreferrer" class="w-full transition-transform transform hover:scale-105">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 w-full flex items-center">
+                    <img src="./images/news.png" alt="News Icon" class="w-12 h-12 object-contain">
+                    <p class="ml-4 text-lg font-semibold text-gray-700 dark:text-gray-300">NEWS</p>
+                </div>
+            </a>
+
+            <!-- Link 4: Ticker Feed Form -->
+            <a href="tickerfeedform.html" target="_blank" rel="noopener noreferrer" class="w-full transition-transform transform hover:scale-105">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 w-full flex items-center">
+                    <img src="./images/tickerfeed.png" alt="Ticker Icon" class="w-12 h-12 object-contain">
+                    <p class="ml-4 text-lg font-semibold text-gray-700 dark:text-gray-300">TICKER FEED</p>
+                </div>
+            </a>
+
+        </div>
+
+        <div id="responseMessage" class="text-center text-sm mt-8"></div>
+
+        <footer class="text-center pt-8 mt-auto text-gray-500 text-sm">
+            Created by TFrank615
+        </footer>
+        
+    </div>
+
+</body>
+</html>
+
